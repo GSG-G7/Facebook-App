@@ -61,6 +61,10 @@ class Home extends React.Component {
             return postArr;
           })
           .then(allPost => {
+            console.log(1111111111111, allPost);
+            if (allPost.length < 1) {
+              this.setState({loading: false});
+            }
             // Make request to get all data about BOST'S USER
             allPost.forEach(onePost => {
               getUserInfo(onePost.user_id)
@@ -93,8 +97,9 @@ class Home extends React.Component {
         addPost(data)
           .then(docRef => {
             console.log('Success add post', docRef.id);
+            this.setState({postValue: ''});
           })
-          .catch(err => console.log(err));
+          .catch(err => console.log('ERROr From Firbse', err));
       }
     });
   };
@@ -122,9 +127,13 @@ class Home extends React.Component {
               <ActivityIndicator size="large" color="#0000ff" />
             ) : (
               <>
-                {allPosts.map(post => (
-                  <CardPost onePost={post} />
-                ))}
+                {allPosts ? (
+                  allPosts.map(post => <CardPost onePost={post} />)
+                ) : (
+                  <View style={stl.noPost}>
+                    <Text style={stl.noPostText}>There is unavilable post</Text>
+                  </View>
+                )}
               </>
             )}
           </View>
@@ -150,6 +159,15 @@ const stl = StyleSheet.create({
   },
   cards: {
     height: '50%',
+  },
+  noPost: {
+    alignItems: 'center',
+  },
+  noPostText: {
+    fontSize: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#133783',
   },
 });
 
